@@ -3,6 +3,7 @@ package com.api.app.dao;
 import com.api.app.database.Database;
 import com.api.app.entities.User;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
@@ -38,8 +39,31 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<User> findAll() {
+        String query = "SELECT * FROM users";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<User> users = new ArrayList<>();
 
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        try {
+            connection = db.connect();
+            statement = db.prepareStatement(connection, query);
+
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                User user = mapToUser(resultSet);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        } finally {
+            db.closeResultSet(resultSet);
+            db.closeStatement(statement);
+            db.closeConnection(connection);
+        }
+
+        return users;
     }
 
     @Override

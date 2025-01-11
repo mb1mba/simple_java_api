@@ -3,11 +3,11 @@ package com.api.app.database;
 import java.sql.*;
 
 public class Database {
-    private static final String URL = "jdbc:postgresql://localhost:5432/database";
+    private final String URL = "jdbc:postgresql://localhost:5432/database";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
 
-    private Connection connect() throws SQLException {
+    public Connection connect() throws SQLException {
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
     }
 
@@ -15,7 +15,7 @@ public class Database {
         return conn.prepareStatement(query);
     }
 
-    static void closeConnection(Connection conn) {
+    public void closeConnection(Connection conn) {
         if (conn != null) {
             try {
                 conn.close();
@@ -25,7 +25,7 @@ public class Database {
         }
     }
 
-    static void closeStatement(Statement stmt) {
+    public void closeStatement(Statement stmt) {
         if (stmt != null) {
             try {
                 stmt.close();
@@ -35,7 +35,7 @@ public class Database {
         }
     }
 
-    static void closeResultSet(ResultSet rs) {
+    public void closeResultSet(ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
