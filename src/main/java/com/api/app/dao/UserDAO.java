@@ -4,7 +4,9 @@ import java.util.List;
 import com.api.app.entities.User;
 
 public interface UserDAO {
-    User findById(int id);
+    User findById(String id);
+
+    User findByEmail(String email);
 
     List<User> findAll();
 

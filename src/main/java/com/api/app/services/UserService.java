@@ -29,10 +29,9 @@ public class UserService implements Service<User> {
 
     @Override
     public boolean doesEntityExist(User user) {
-        int user_id = user.getId();
+        String userEmail = user.getEmail();
 
-        User existingUser = userDAO.findById(user_id);
-
+        User existingUser = userDAO.findByEmail(userEmail);
         if (existingUser == null) {
             return false;
         }
