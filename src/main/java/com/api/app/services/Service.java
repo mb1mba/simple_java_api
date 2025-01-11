@@ -6,4 +6,8 @@ public interface Service<T> {
     void createEntity(T entity);
 
     List<T> getEntities();
+
+    Class<T> getEntityType();
+
+    boolean doesEntityExist(T entity);
 }
