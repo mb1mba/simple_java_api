@@ -10,7 +10,7 @@ public class UserDAOImpl implements UserDAO {
     private final Database db = new Database();
 
     @Override
-    public User findById(int id) {
+    public User findById(String id) {
         String query = "SELECT * FROM users WHERE id = ?";
         Connection connection = null;
         PreparedStatement statement = null;
@@ -19,7 +19,35 @@ public class UserDAOImpl implements UserDAO {
         try {
             connection = db.connect();
             statement = db.prepareStatement(connection, query);
-            statement.setInt(1, id);
+            statement.setString(1, id);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return mapToUser(resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        } finally {
+            db.closeResultSet(resultSet);
+            db.closeStatement(statement);
+            db.closeConnection(connection);
+        }
+
+        return null;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        String query = "SELECT * FROM users WHERE email = ?";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = db.connect();
+            statement = db.prepareStatement(connection, query);
+            statement.setString(1, email);
 
             resultSet = statement.executeQuery();
 
@@ -68,7 +96,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void save(User user) {
-        String query = "INSERT INTO users (id, name, email) VALUES (?, ?, ?)";
+        String query = "INSERT INTO users (name, email) VALUES (?, ?)";
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -77,9 +105,8 @@ public class UserDAOImpl implements UserDAO {
             connection = db.connect();
 
             statement = db.prepareStatement(connection, query);
-            statement.setInt(1, user.getId());
-            statement.setString(2, user.getName());
-            statement.setString(3, user.getEmail());
+            statement.setString(1, user.getName());
+            statement.setString(2, user.getEmail());
 
             resultSet = statement.executeQuery();
         } catch (SQLException e) {
@@ -105,8 +132,8 @@ public class UserDAOImpl implements UserDAO {
     }
 
     private User mapToUser(ResultSet resultSet) throws SQLException {
-        User user = new User(0, null, null);
-        user.setId(resultSet.getInt("id"));
+        User user = new User(null, null, null);
+        user.setId(resultSet.getString("id"));
         user.setName(resultSet.getString("name"));
         user.setEmail(resultSet.getString("email"));
         return user;
