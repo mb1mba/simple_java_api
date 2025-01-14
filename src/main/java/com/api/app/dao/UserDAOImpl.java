@@ -121,13 +121,31 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void update(User user) {
+        String query = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
 
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        try {
+            connection = db.connect();
+            statement = db.prepareStatement(connection, query);
+            statement.setString(1, user.getName());
+            statement.setString(2, user.getEmail());
+            statement.setString(3, user.getId());
+
+            resultSet = statement.executeQuery();
+        } catch (SQLException e) {
+            System.out.println(e);
+        } finally {
+            db.closeResultSet(resultSet);
+            db.closeStatement(statement);
+            db.closeConnection(connection);
+            System.out.println("User updated successfully");
+        }
     }
 
     @Override
     public void delete(int id) {
-
         throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
 
