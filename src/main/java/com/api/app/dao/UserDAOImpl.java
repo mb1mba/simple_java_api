@@ -145,8 +145,26 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void delete(int id) {
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void delete(String id) {
+        String query = "DELETE FROM users WHERE id = ?";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = db.connect();
+            statement = db.prepareStatement(connection, query);
+            statement.setString(1, id);
+
+            resultSet = statement.executeQuery();
+        } catch (SQLException e) {
+            System.out.println(e);
+        } finally {
+            db.closeResultSet(resultSet);
+            db.closeStatement(statement);
+            db.closeConnection(connection);
+            System.out.println("User deleted successfully");
+        }
     }
 
     private User mapToUser(ResultSet resultSet) throws SQLException {
