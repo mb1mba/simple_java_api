@@ -9,5 +9,7 @@ public interface Service<T> {
 
     Class<T> getEntityType();
 
+    void deleteEntity(String id);
+
     boolean doesEntityExist(T entity);
 }

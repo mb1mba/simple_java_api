@@ -23,6 +23,11 @@ public class UserService implements Service<User> {
     }
 
     @Override
+    public void deleteEntity(String id) {
+        userDAO.delete(id);
+    }
+
+    @Override
     public Class<User> getEntityType() {
         return User.class;
     }
