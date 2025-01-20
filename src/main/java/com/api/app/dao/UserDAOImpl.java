@@ -2,15 +2,17 @@ package com.api.app.dao;
 
 import com.api.app.database.Database;
 import com.api.app.entities.User;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UserDAOImpl implements UserDAO {
     private final Database db = new Database();
 
     @Override
-    public User findById(String id) {
+    public User findById(UUID id) {
         String query = "SELECT * FROM users WHERE id = ?";
         Connection connection = null;
         PreparedStatement statement = null;
@@ -19,7 +21,7 @@ public class UserDAOImpl implements UserDAO {
         try {
             connection = db.connect();
             statement = db.prepareStatement(connection, query);
-            statement.setString(1, id);
+            statement.setObject(1, id);
 
             resultSet = statement.executeQuery();
 
@@ -145,7 +147,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(UUID id) {
         String query = "DELETE FROM users WHERE id = ?";
         Connection connection = null;
         PreparedStatement statement = null;
@@ -154,9 +156,10 @@ public class UserDAOImpl implements UserDAO {
         try {
             connection = db.connect();
             statement = db.prepareStatement(connection, query);
-            statement.setString(1, id);
+            statement.setObject(1, id);
 
             resultSet = statement.executeQuery();
+
         } catch (SQLException e) {
             System.out.println(e);
         } finally {

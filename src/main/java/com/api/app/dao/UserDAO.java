@@ -1,10 +1,12 @@
 package com.api.app.dao;
 
 import java.util.List;
+import java.util.UUID;
+
 import com.api.app.entities.User;
 
 public interface UserDAO {
-    User findById(String id);
+    User findById(UUID id);
 
     User findByEmail(String email);
 
@@ -14,5 +16,5 @@ public interface UserDAO {
 
     void update(User user);
 
-    void delete(String id);
+    void delete(UUID id);
 }
