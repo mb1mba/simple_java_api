@@ -11,5 +11,5 @@ public interface Service<T> {
 
     void deleteEntity(String id);
 
-    boolean doesEntityExist(T entity);
+    boolean doesEntityExist(String id);
 }

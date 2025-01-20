@@ -4,6 +4,7 @@ import com.api.app.dao.UserDAO;
 import com.api.app.entities.User;
 
 import java.util.List;
+import java.util.UUID;
 
 public class UserService implements Service<User> {
     private final UserDAO userDAO;
@@ -24,7 +25,14 @@ public class UserService implements Service<User> {
 
     @Override
     public void deleteEntity(String id) {
-        userDAO.delete(id);
+        UUID userId = UUID.fromString(id);
+        User user = userDAO.findById(userId);
+
+        if (user != null) {
+            userDAO.delete(userId);
+        } else {
+            throw new RuntimeException("User not found.");
+        }
     }
 
     @Override
@@ -33,10 +41,9 @@ public class UserService implements Service<User> {
     }
 
     @Override
-    public boolean doesEntityExist(User user) {
-        String userEmail = user.getEmail();
-
-        User existingUser = userDAO.findByEmail(userEmail);
+    public boolean doesEntityExist(String id) {
+        UUID userId = UUID.fromString(id);
+        User existingUser = userDAO.findById(userId);
         if (existingUser == null) {
             return false;
         }
