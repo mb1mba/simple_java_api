@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.util.List;
 
 public class App {
@@ -56,14 +57,8 @@ class Handler<T> implements HttpHandler {
 
                     T entity = Utils.deserializeJsonToEntity(requestBody, service.getEntityType());
 
-                    boolean existingUser = service.doesEntityExist(entity);
-
-                    if (existingUser) {
-                        sendResponse(exchange, 409, "User already exists.");
-                    } else {
-                        service.createEntity(entity);
-                        sendResponse(exchange, 201, "Entity created successfully.");
-                    }
+                    service.createEntity(entity);
+                    sendResponse(exchange, 201, "Entity created successfully.");
                 } catch (Exception e) {
                     System.out.print(e);
                     sendResponse(exchange, 400, "Error processing request.");
@@ -72,10 +67,24 @@ class Handler<T> implements HttpHandler {
                 }
                 break;
 
+            case "DELETE":
+                try {
+                    URI u = exchange.getRequestURI();
+                    String path = u.getPath();
+                    String[] segments = path.split("/");
+                    String entityId = segments[segments.length - 1];
+
+                    service.deleteEntity(entityId);
+                    sendResponse(exchange, 200, "Entity deleted successfully.");
+                    break;
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
             default:
                 sendResponse(exchange, 405, "Method Not Allowed.");
                 break;
         }
+
     }
 
     private void sendResponse(HttpExchange exchange, int statusCode, Object response) throws IOException {
